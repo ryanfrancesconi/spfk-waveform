@@ -11,19 +11,10 @@ nothing above it: `WaveformDataParser` reduces audio to per-chunk peaks, `Wavefo
 persists the result to a sharded on-disk cache, and `WaveformImage` rasterizes peaks into a
 `CGImage`. It imports no AppKit and no Metal, so the drawing layer above it is free to be either.
 
-## Usage
+## Scanning
 
-### Scanning
-
-```swift
-import SPFKWaveform
-
-let parser = WaveformDataParser(resolution: .medium)
-let waveform = try await parser.parse(url: url)
-
-print(waveform.floatChannelData.count)  // one array of peaks per channel
-print(waveform.samplesPerPoint, waveform.audioDuration, waveform.sampleRate)
-```
+`WaveformDataParser` reduces a file to one array of peaks per channel, reporting the samples per
+point, duration and sample rate alongside them.
 
 `WaveformDrawingResolution` is an enum — `.low` through `.lossless`, 128 down to 1 samples per
 point — and can also be initialized from a `samplesPerPoint` count or from a duration, which picks a
@@ -32,25 +23,11 @@ preset appropriate to the file's length. Pass an `eventHandler` to the parser to
 
 For containers `AVAudioFile` cannot open — Matroska is the one users hit — scan from a
 `SequentialPCMSource` (declared in `SPFKBase`) instead, supplying the duration from the container's
-own header, since a streamed source generally knows it without having read to the end:
-
-```swift
-let waveform = try await parser.parse(pcmSource: reader, url: url, duration: duration)
-```
+own header, since a streamed source generally knows it without having read to the end.
 
 Both entry points return the same `WaveformData`; nothing downstream can tell which produced it.
 
-### Caching
-
-```swift
-let store = try WaveformDataStore(inDirectory: cachesURL)
-
-let key = WaveformCacheKey(url: url, audioTrackID: trackID)
-if let cached = try store.fetchIfFresh(key: key) {
-    // still matches the file's modification date and size
-}
-try store.insert(dto: item)
-```
+## Caching
 
 The cache is keyed by file **and** audio track, because a container offering several tracks has a
 waveform per track and a lookup by URL alone answers with whichever was scanned first. `fetchIfFresh`
@@ -67,19 +44,7 @@ directory in a resumable background sweep.
 `WaveformDataStoreAccess` is the protocol an app conforms to in order to vend the store to its UI
 layer without handing over the store itself.
 
-### Rasterizing
-
-```swift
-let renderer = WaveformImage()
-
-let images = try renderer.createImages(
-    size: CGSize(width: 800, height: 60),
-    floatChannelData: waveform.floatChannelData,
-    waveformDisplay: .full,
-    waveformQuality: .high,
-    strokeColor: color.cgColor
-)
-```
+## Rasterizing
 
 `createImages` returns one `CGImage` per channel; `createImage` renders a single channel. The
 renderer reuses one bitmap context across calls, so repeated draws at the same size do not
@@ -90,3 +55,12 @@ reallocate.
 ```swift
 .package(url: "https://github.com/ryanfrancesconi/spfk-waveform", from: "1.0.0"),
 ```
+
+## Requirements
+
+- **Platforms:** macOS 13+, iOS 16+
+- **Swift:** 6.2+
+
+## About
+
+Spongefork is the personal software projects of musician and developer [Ryan Francesconi](https://spongefork.com). Dedicated to creative sound manipulation, his first application, Spongefork, was released in 1999 for macOS 8. From 2026, Spongefork returns as his software container for more musical experimentation. In addition to [software releases](https://spongefork.com/shadowtag/), open source components can be found on his [GitHub page](https://github.com/ryanfrancesconi).
