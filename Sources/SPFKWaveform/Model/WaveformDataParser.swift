@@ -11,6 +11,10 @@ public struct WaveformDataParser: Sendable {
     public let resolution: WaveformDrawingResolution
     public let eventHandler: WaveformDataLoadEventHandler?
 
+    /// Failed reads, with none successful, before the scan gives up on the file. More than one, so
+    /// a single bad packet at the head of a readable file is still skipped rather than fatal.
+    static let unreadableFileReadAttempts = 4
+
     public init(
         resolution: WaveformDrawingResolution = .medium,
         eventHandler: WaveformDataLoadEventHandler? = nil
@@ -98,26 +102,42 @@ extension WaveformDataParser {
 
             audioFile.framePosition = currentFrame
 
+            let didRead: Bool
+
             do {
                 try audioFile.read(into: buffer, frameCount: framesPerBuffer)
+                didRead = true
 
             } catch {
                 chunksSkipped += 1
-                continue
+                didRead = false
+
+                // A skipped chunk is one bad packet in a readable file. When no read has succeeded
+                // yet, the file is one the decoder cannot open -- a DRM-protected purchase reads
+                // this way -- and every remaining read would only repeat the failure.
+                if chunksSkipped == i + 1, chunksSkipped >= Self.unreadableFileReadAttempts {
+                    throw NSError(
+                        description: "Unable to read audio from \(url.lastPathComponent): the first \(chunksSkipped) reads failed (\(error.localizedDescription))"
+                    )
+                }
             }
 
-            guard buffer.floatChannelData != nil else {
-                throw NSError(description: "Failed to read from buffer")
+            if didRead {
+                guard buffer.floatChannelData != nil else {
+                    throw NSError(description: "Failed to read from buffer")
+                }
+
+                Self.writePeaks(
+                    from: buffer,
+                    frameCount: framesPerBuffer.int,
+                    channelCount: channelCount,
+                    into: &outfloatChannelData,
+                    at: i
+                )
             }
 
-            Self.writePeaks(
-                from: buffer,
-                frameCount: framesPerBuffer.int,
-                channelCount: channelCount,
-                into: &outfloatChannelData,
-                at: i
-            )
-
+            // Advanced on a skip too, or the next read retries the same frames and every later
+            // peak lands one chunk early.
             currentFrame += AVAudioFramePosition(framesPerBuffer)
 
             // buffer has reached end of file, trim it
