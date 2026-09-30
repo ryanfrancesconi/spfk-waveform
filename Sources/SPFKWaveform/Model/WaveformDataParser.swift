@@ -164,8 +164,6 @@ extension WaveformDataParser {
 
     /// read the entire file into memory. should only be used on short files
     private func readEntire(audioFile: AVAudioFile) async throws -> FloatChannelData {
-        Log.debug("reading entire file \(audioFile.url.path)")
-
         guard let buffer = try AVAudioPCMBuffer(audioFile: audioFile) else {
             throw NSError(description: "Unable to create buffer")
         }

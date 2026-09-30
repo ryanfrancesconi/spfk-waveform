@@ -71,8 +71,6 @@ class WaveformDataParserTests: BinTestCase {
         // puts cancellation mid-parse with no dependence on scheduling or wall clock.
         let task = Task<WaveformData, Error>(priority: .high) {
             let parser = WaveformDataParser(resolution: .veryHigh, eventHandler: { event in
-                Log.debug(event.progress)
-
                 guard case .progress = event else { return }
 
                 withUnsafeCurrentTask { $0?.cancel() }

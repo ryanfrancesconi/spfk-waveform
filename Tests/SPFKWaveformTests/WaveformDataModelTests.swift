@@ -48,7 +48,6 @@ extension WaveformDataModelTests {
         let cache: [WaveformDataItem] = try await createCache()
 
         for item in cache {
-            Log.debug("inserting", item.url.path)
             try await data.insert(dto: .init(url: item.url, waveformData: item.waveformData))
         }
     }
