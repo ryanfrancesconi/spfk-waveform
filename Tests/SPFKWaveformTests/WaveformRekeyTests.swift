@@ -75,4 +75,19 @@ final class WaveformRekeyTests: BinTestCase {
         #expect(kept?.waveformData.floatChannelData.first?.first == 0.75)
         #expect(try await store.count() == 1)
     }
+
+    /// A relinked file whose waveform does not move leaves nothing under its old URL.
+    @Test func deletingWhatIsPresentRemovesEveryTrackAndToleratesNothing() async throws {
+        let store = try makeStore()
+        let (old, new) = try makeCopies()
+
+        try await store.insert(dto: item(url: old, value: 0.25))
+        try await store.insert(dto: item(url: old, audioTrackID: 2, value: 0.5))
+        try await store.insert(dto: item(url: new, value: 0.75))
+
+        await store.deleteIfPresent(url: old)
+        await store.deleteIfPresent(url: old)
+
+        #expect(try await store.count() == 1)
+    }
 }

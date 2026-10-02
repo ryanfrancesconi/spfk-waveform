@@ -113,6 +113,13 @@ extension WaveformDataStore {
         }
     }
 
+    /// ``delete(url:)`` for a caller that does not know whether anything is cached.
+    public func deleteIfPresent(url: URL) {
+        for key in entryKeys(forFileKey: url.sha256) {
+            deleteFiles(for: key)
+        }
+    }
+
     public func deleteAll() {
         let fm = FileManager.default
         guard let shardDirs = try? fm.contentsOfDirectory(

@@ -23,4 +23,7 @@ public protocol WaveformDataStoreAccess: Sendable {
     /// Moves every cached waveform for a file that moved without its content changing. See
     /// ``WaveformDataStore/rekey(from:to:)``.
     func rekeyWaveformData(from oldURL: URL, to newURL: URL) async throws
+
+    /// Removes every cached waveform for `url`, across all of its tracks. Nothing cached is not an error.
+    func deleteWaveformData(for url: URL) async
 }
