@@ -19,4 +19,8 @@ public protocol WaveformDataStoreAccess: Sendable {
     ///
     /// Per file, covering every track: one save invalidates all of them at once.
     func refreshWaveformFreshness(url: URL) async throws
+
+    /// Moves every cached waveform for a file that moved without its content changing. See
+    /// ``WaveformDataStore/rekey(from:to:)``.
+    func rekeyWaveformData(from oldURL: URL, to newURL: URL) async throws
 }

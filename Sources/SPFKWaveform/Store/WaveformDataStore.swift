@@ -192,6 +192,38 @@ extension WaveformDataStore {
         }
     }
 
+    /// Moves every cached waveform for `oldURL` to `newURL`, for a file that moved without its
+    /// content changing.
+    ///
+    /// Each entry is rewritten rather than renamed: it embeds its source URL, and its freshness
+    /// fields are restamped from `newURL` so ``fetchIfFresh(key:)`` keeps it. **Only call this for a
+    /// file verified to hold the same audio** — the restamp is what asserts it. When `newURL`
+    /// already has entries they win, and `oldURL`'s are deleted.
+    public func rekey(from oldURL: URL, to newURL: URL) throws {
+        let oldKeys = entryKeys(forFileKey: oldURL.sha256)
+
+        guard oldKeys.isNotEmpty, oldURL.sha256 != newURL.sha256 else { return }
+
+        defer {
+            for key in oldKeys {
+                deleteFiles(for: key)
+            }
+        }
+
+        guard entryKeys(forFileKey: newURL.sha256).isEmpty else { return }
+
+        for key in oldKeys {
+            // Unreadable is a miss, as in `fetchIfFresh`: the entry goes and the file is re-scanned.
+            guard let item = try? WaveformCacheFile.read(from: cacheFileURL(for: key)) else { continue }
+
+            try insert(dto: WaveformDataItem(
+                url: newURL,
+                audioTrackID: item.audioTrackID,
+                waveformData: item.waveformData
+            ))
+        }
+    }
+
     /// No-op for waveform store — each insert writes immediately.
     /// Kept for API compatibility with callers that call save() generically.
     public func save() throws {}
