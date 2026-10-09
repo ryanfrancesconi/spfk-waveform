@@ -38,8 +38,7 @@ costs one re-scan instead of failing the load. After writing metadata to a file,
 valid waveform; it refreshes every track's entry at once.
 
 Files are laid out under `<inDirectory>/Data/Waveform/<shard>/`, sharded by the first two hex digits
-of the URL's SHA-256. `FlatToShardedMigration.waveform(inCachesDirectory:)` migrates a legacy flat
-directory in a resumable background sweep.
+of the URL's SHA-256.
 
 `WaveformDataStoreAccess` is the protocol an app conforms to in order to vend the store to its UI
 layer without handing over the store itself.
