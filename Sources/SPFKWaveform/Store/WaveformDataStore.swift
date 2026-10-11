@@ -40,11 +40,12 @@ public actor WaveformDataStore {
 
     /// Every entry belonging to one file, whichever track each names.
     ///
-    /// A file's entries all begin with its hash — see `WaveformCacheKey.storageKey` — so this is a
-    /// prefix match rather than an equality test. Anything that compares whole keys against file
+    /// A file's entries all begin with its hash — see `WaveformCacheKey.storageKey` — so they share
+    /// one shard, and this is a prefix match rather than an equality test. Anything that compares whole keys against file
     /// hashes treats every per-track entry as belonging to no file at all.
     private func entryKeys(forFileKey fileKey: String) -> [String] {
-        entryKeys().filter { $0 == fileKey || $0.hasPrefix("\(fileKey)-") }
+        shardedDirectory.entryKeys(suffix: Self.wfcacheSuffix, inShardOf: fileKey)
+            .filter { $0 == fileKey || $0.hasPrefix("\(fileKey)-") }
     }
 }
 
