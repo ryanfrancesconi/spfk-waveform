@@ -29,11 +29,16 @@ public struct WaveformDataParser: Sendable {
 
     public func parse(audioFile: AVAudioFile) async throws -> WaveformData {
         // store the current frame before scanning the file
-        let currentFrame = audioFile.framePosition
+        var currentFrame: AVAudioFramePosition = 0
+        try ExceptionTrap.withThrowing { currentFrame = audioFile.framePosition }
 
         defer {
             // return the file to frame is was on previously
-            audioFile.framePosition = currentFrame
+            do {
+                try ExceptionTrap.withThrowing { audioFile.framePosition = currentFrame }
+            } catch {
+                Log.error(error)
+            }
         }
 
         let floatChannelData: FloatChannelData = try await _parse(audioFile: audioFile)
@@ -100,7 +105,7 @@ extension WaveformDataParser {
         for i in 0 ..< chunkCount {
             try Task.checkCancellation()
 
-            audioFile.framePosition = currentFrame
+            try ExceptionTrap.withThrowing { audioFile.framePosition = currentFrame }
 
             let didRead: Bool
 
