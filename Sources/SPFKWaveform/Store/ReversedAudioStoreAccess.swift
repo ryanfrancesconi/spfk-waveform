@@ -21,4 +21,7 @@ public protocol ReversedAudioStoreAccess: Sendable {
 
     /// Removes every entry for `url`, across all of its tracks. Nothing cached is not an error.
     func deleteReversedAudio(for url: URL) async
+
+    /// Removes every entry and any build left in scratch.
+    func deleteAllReversedAudio() async
 }
