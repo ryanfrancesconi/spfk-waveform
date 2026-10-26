@@ -137,6 +137,17 @@ final class ReversedAudioStoreTests: BinTestCase {
         #expect(await store.count() == 1)
     }
 
+    @Test func aBuildInScratchIsNotAnEntry() async throws {
+        let store = try makeStore()
+        let source = try makeSource()
+        try await store.commit(key: ReversedAudioKey(url: source), from: try makeBuild(store), frameCount: 1, sampleRate: 48000)
+        let inFlight = try makeBuild(store)
+
+        #expect(await store.count() == 1)
+        #expect(await store.prune(activeKeys: [source.sha256]) == 0)
+        #expect(FileManager.default.fileExists(atPath: inFlight.path))
+    }
+
     @Test func deleteAllEmptiesTheStoreAndScratch() async throws {
         let store = try makeStore()
         try await store.commit(key: ReversedAudioKey(url: try makeSource()), from: try makeBuild(store), frameCount: 1, sampleRate: 48000)
