@@ -233,28 +233,28 @@ extension WaveformCacheFile {
         }
     }
 
-    /// Rewrites the file with updated freshness metadata while preserving all other fields.
+    /// Overwrites the freshness fields in place, leaving every other byte alone.
+    ///
+    /// Not atomic: an interrupted write leaves a header that reads as stale, which costs one
+    /// re-scan of a derived cache.
     public static func refreshFreshness(at cacheURL: URL, from fileURL: URL) throws {
-        var data = try Data(contentsOf: cacheURL)
-        try validateMagic(data)
+        let handle = try FileHandle(forUpdating: cacheURL)
+        defer { try? handle.close() }
 
-        guard data.count >= fixedHeaderSize else {
+        guard let header = try handle.read(upToCount: fixedHeaderSize), header.count == fixedHeaderSize else {
             throw NSError(description: "Waveform cache file too small for freshness update")
         }
 
+        try validateMagic(header)
+
         var modDate = encodeDate(fileURL.modificationDate)
-        data.replaceSubrange(
-            Offset.modificationDate ..< Offset.fileSize,
-            with: Data(bytes: &modDate, count: MemoryLayout<Float64>.size)
-        )
-
         var size = encodeFileSize(fileURL.fileSize)
-        data.replaceSubrange(
-            Offset.fileSize ..< Offset.audioDuration,
-            with: Data(bytes: &size, count: MemoryLayout<Int64>.size)
-        )
 
-        try data.write(to: cacheURL, options: .atomic)
+        var fields = Data(bytes: &modDate, count: MemoryLayout<Float64>.size)
+        fields.append(Data(bytes: &size, count: MemoryLayout<Int64>.size))
+
+        try handle.seek(toOffset: UInt64(Offset.modificationDate))
+        try handle.write(contentsOf: fields)
     }
 }
 

@@ -165,10 +165,10 @@ extension ReversedAudioStore {
         return removedCount
     }
 
-    /// Re-stamps every entry for `url` after the app's own write bumped its modification date
-    /// without touching its audio.
-    public func refreshFreshness(url: URL) throws {
-        for key in entryKeys(forFileKey: url.sha256) {
+    /// Re-stamps every entry for `urls` after the app's own write bumped their modification dates
+    /// without touching their audio.
+    public func refreshFreshness(urls: Set<URL>) throws {
+        for (key, url) in shardedDirectory.entryKeys(suffix: Self.sidecarSuffix, forFilesAt: urls) {
             guard var sidecar = try? readSidecar(for: key) else { continue }
             sidecar.stamp(from: url)
             try writeSidecar(sidecar, for: key)

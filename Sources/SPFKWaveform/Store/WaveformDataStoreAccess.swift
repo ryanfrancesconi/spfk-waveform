@@ -18,7 +18,7 @@ public protocol WaveformDataStoreAccess: Sendable {
     /// modification date bump doesn't invalidate the cached waveform.
     ///
     /// Per file, covering every track: one save invalidates all of them at once.
-    func refreshWaveformFreshness(url: URL) async throws
+    func refreshWaveformFreshness(urls: Set<URL>) async throws
 
     /// Moves every cached waveform for a file that moved without its content changing. See
     /// ``WaveformDataStore/rekey(from:to:)``.

@@ -208,7 +208,7 @@ extension WaveformDataModelTests {
         try cowbell.updateModificationDate()
 
         // Call refreshFreshness to update the stored dates
-        try await data.refreshFreshness(url: cowbell)
+        try await data.refreshFreshness(urls: [cowbell])
 
         // Cache should still be valid
         let afterRefresh = try await data.fetchIfFresh(key: WaveformCacheKey(url: cowbell))

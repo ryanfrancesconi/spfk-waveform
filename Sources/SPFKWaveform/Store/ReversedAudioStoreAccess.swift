@@ -13,8 +13,8 @@ public protocol ReversedAudioStoreAccess: Sendable {
     /// Moves a finished build into place, stamped fresh against the source as it is now.
     func commitReversedAudio(key: ReversedAudioKey, from temporaryURL: URL, frameCount: Int, sampleRate: Double) async throws
 
-    /// Re-stamps every entry for `url` after the app's own metadata write. See ``ReversedAudioStore/refreshFreshness(url:)``.
-    func refreshReversedAudioFreshness(url: URL) async throws
+    /// Re-stamps every entry for `urls` after the app's own metadata write. See ``ReversedAudioStore/refreshFreshness(urls:)``.
+    func refreshReversedAudioFreshness(urls: Set<URL>) async throws
 
     /// Moves every entry for a file that moved without its content changing.
     func rekeyReversedAudio(from oldURL: URL, to newURL: URL) async throws

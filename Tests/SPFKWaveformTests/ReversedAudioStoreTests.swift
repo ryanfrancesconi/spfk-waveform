@@ -91,7 +91,7 @@ final class ReversedAudioStoreTests: BinTestCase {
         try await store.commit(key: key, from: try makeBuild(store), frameCount: 10, sampleRate: 44100)
 
         try Data(repeating: 3, count: 80).write(to: source)
-        try await store.refreshFreshness(url: source)
+        try await store.refreshFreshness(urls: [source])
 
         #expect(await store.fetchIfFresh(key: key)?.frameCount == 10)
     }

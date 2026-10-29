@@ -185,18 +185,14 @@ extension WaveformDataStore {
     /// Updates the freshness metadata (modificationDate, fileSize) for a cached waveform
     /// without re-parsing the waveform data. Call after ShadowTag saves metadata to a file
     /// so the cache doesn't get invalidated by our own modification date bump.
-    /// Restamps every cached waveform for `url` after the app's own write bumped its modification
-    /// date.
+    /// Restamps every cached waveform for `urls` after the app's own write bumped their
+    /// modification dates.
     ///
     /// All of the file's tracks, not just one: a save changes the file, so every entry derived from
     /// it goes stale at the same moment and would otherwise be re-scanned one track at a time.
-    public func refreshFreshness(url: URL) throws {
-        for key in entryKeys(forFileKey: url.sha256) {
-            let cacheFile = cacheFileURL(for: key)
-
-            guard FileManager.default.fileExists(atPath: cacheFile.path) else { continue }
-
-            try WaveformCacheFile.refreshFreshness(at: cacheFile, from: url)
+    public func refreshFreshness(urls: Set<URL>) throws {
+        for (key, url) in shardedDirectory.entryKeys(suffix: Self.wfcacheSuffix, forFilesAt: urls) {
+            try WaveformCacheFile.refreshFreshness(at: cacheFileURL(for: key), from: url)
         }
     }
 

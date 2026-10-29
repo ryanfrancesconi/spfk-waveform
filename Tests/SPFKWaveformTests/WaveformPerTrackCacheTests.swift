@@ -140,11 +140,44 @@ final class WaveformPerTrackCacheTests: BinTestCase {
             ))
         }
 
-        try await store.refreshFreshness(url: url)
+        try await store.refreshFreshness(urls: [url])
 
         #expect(try await store.fetchIfFresh(key: WaveformCacheKey(url: url)) != nil)
         #expect(try await store.fetchIfFresh(key: WaveformCacheKey(url: url, audioTrackID: 1)) != nil)
         #expect(try await store.fetchIfFresh(key: WaveformCacheKey(url: url, audioTrackID: 2)) != nil)
+    }
+
+    /// A batch restamps exactly the files it names, however their entries fall across shards.
+    @Test func refreshingABatchRestampsOnlyTheNamedFiles() async throws {
+        let store = try makeStore()
+        let stale = Date(timeIntervalSinceReferenceDate: 1)
+
+        let sources = try (0 ..< 3).map { index in
+            let source = bin.appendingPathComponent("source-\(index).wav")
+            try Data(repeating: UInt8(index), count: 100 + index).write(to: source)
+            return source
+        }
+
+        for source in sources {
+            for track in [nil, UInt64(1)] {
+                try await store.insert(dto: WaveformDataItem(
+                    url: source,
+                    audioTrackID: track,
+                    modificationDate: stale,
+                    fileSize: 1,
+                    waveformData: item(audioTrackID: track, value: 0.5).waveformData
+                ))
+            }
+        }
+
+        try await store.refreshFreshness(urls: [sources[0], sources[1]])
+
+        for source in sources.prefix(2) {
+            #expect(try await store.fetchIfFresh(key: WaveformCacheKey(url: source)) != nil)
+            #expect(try await store.fetchIfFresh(key: WaveformCacheKey(url: source, audioTrackID: 1)) != nil)
+        }
+
+        #expect(try await store.fetchIfFresh(key: WaveformCacheKey(url: sources[2])) == nil)
     }
 
     /// Deleting means "this file's waveform is gone", which is true of every track at once.
