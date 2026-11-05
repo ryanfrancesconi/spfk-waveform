@@ -21,10 +21,8 @@ public actor WaveformDataStore {
     }
 
     private static func ensureDirectory(at url: URL) throws {
-        let fm = FileManager.default
-        if !fm.fileExists(atPath: url.path) {
-            try fm.createDirectory(at: url, withIntermediateDirectories: true)
-        }
+        // Unconditional: a no-op on an existing directory, and a throw on a file in its place.
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
     }
 
     private func cacheFileURL(for key: String) -> URL {
