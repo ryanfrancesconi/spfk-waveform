@@ -44,7 +44,7 @@ public actor ReversedAudioStore {
         directoryURL = dataURL.appendingPathComponent("Reversed")
         shardedDirectory = ShardedDirectory(rootURL: directoryURL)
         scratchDirectoryURL = dataURL.appendingPathComponent(Self.scratchDirectoryName)
-        try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+        try FileSystem.ensureWritableDirectory(at: directoryURL)
     }
 
     private func audioURL(for key: String) -> URL {
