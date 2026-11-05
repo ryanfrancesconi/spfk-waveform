@@ -4,6 +4,7 @@ import CryptoKit
 import Foundation
 import SPFKAudioBase
 import SPFKBase
+import SPFKFileSystem
 import SPFKUtils
 
 public actor WaveformDataStore {
@@ -14,7 +15,7 @@ public actor WaveformDataStore {
     private static let wfcacheSuffix = ".\(WaveformCacheFile.fileExtension)"
 
     public init(inDirectory: URL) throws {
-        directoryURL = inDirectory.appendingPathComponent("Data/Waveform")
+        directoryURL = inDirectory.appendingPathComponent(CacheDirectoryName.data).appendingPathComponent("Waveform")
         shardedDirectory = ShardedDirectory(rootURL: directoryURL)
         try Self.ensureDirectory(at: directoryURL)
     }

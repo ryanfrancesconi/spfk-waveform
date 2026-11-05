@@ -2,6 +2,7 @@
 
 import Foundation
 import SPFKBase
+import SPFKFileSystem
 import SPFKUtils
 
 /// Reversed copies of audio files, built once per source version for reversed preview.
@@ -36,9 +37,10 @@ public actor ReversedAudioStore {
     }
 
     public init(inDirectory: URL) throws {
-        directoryURL = inDirectory.appendingPathComponent("Data/Reversed")
+        let dataURL = inDirectory.appendingPathComponent(CacheDirectoryName.data)
+        directoryURL = dataURL.appendingPathComponent("Reversed")
         shardedDirectory = ShardedDirectory(rootURL: directoryURL)
-        scratchDirectoryURL = inDirectory.appendingPathComponent("Data/ReversedScratch")
+        scratchDirectoryURL = dataURL.appendingPathComponent("ReversedScratch")
         try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
     }
 

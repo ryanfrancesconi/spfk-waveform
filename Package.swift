@@ -16,6 +16,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/ryanfrancesconi/spfk-audio-base", from: "1.10.1"),
         .package(url: "https://github.com/ryanfrancesconi/spfk-base", from: "1.6.0"),
+        .package(url: "https://github.com/ryanfrancesconi/spfk-filesystem", from: "1.12.1"),
         .package(url: "https://github.com/ryanfrancesconi/spfk-testing", from: "1.1.0"),
         .package(url: "https://github.com/ryanfrancesconi/spfk-utils", from: "1.14.0"),
     ],
@@ -25,6 +26,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SPFKAudioBase", package: "spfk-audio-base"),
                 .product(name: "SPFKBase", package: "spfk-base"),
+                .product(name: "SPFKFileSystem", package: "spfk-filesystem"),
                 .product(name: "SPFKUtils", package: "spfk-utils"),
             ]
         ),
