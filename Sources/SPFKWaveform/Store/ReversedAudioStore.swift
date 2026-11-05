@@ -17,6 +17,9 @@ public actor ReversedAudioStore {
     /// Beside the sharded root rather than in it, where it would be listed as a shard.
     nonisolated let scratchDirectoryURL: URL
 
+    /// Beside the store's own directory in `Data`. A cache move deletes it rather than moving it.
+    public static let scratchDirectoryName = "ReversedScratch"
+
     private static let audioSuffix = ".caf"
     private static let sidecarSuffix = ".json"
 
@@ -40,7 +43,7 @@ public actor ReversedAudioStore {
         let dataURL = inDirectory.appendingPathComponent(CacheDirectoryName.data)
         directoryURL = dataURL.appendingPathComponent("Reversed")
         shardedDirectory = ShardedDirectory(rootURL: directoryURL)
-        scratchDirectoryURL = dataURL.appendingPathComponent("ReversedScratch")
+        scratchDirectoryURL = dataURL.appendingPathComponent(Self.scratchDirectoryName)
         try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
     }
 
