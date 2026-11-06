@@ -1,27 +1,20 @@
 # SPFKWaveform
 
 [![Version](https://img.shields.io/github/v/tag/ryanfrancesconi/spfk-waveform)](https://github.com/ryanfrancesconi/spfk-waveform/tags)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fryanfrancesconi%2Fspfk-waveform%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/ryanfrancesconi/spfk-waveform)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fryanfrancesconi%2Fspfk-waveform%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/ryanfrancesconi/spfk-waveform)
+[![Swift](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fryanfrancesconi%2Fspfk-waveform%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/ryanfrancesconi/spfk-waveform)
+[![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fryanfrancesconi%2Fspfk-waveform%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/ryanfrancesconi/spfk-waveform)
 
-The capability between an audio file and a drawn waveform: scanning audio into peak data, caching
-the result on disk, and rasterizing peaks into images. It imports no AppKit and no Metal, so the
-drawing layer above it can be either. spfk-audio-ui draws ShadowTag's waveforms from it.
+Waveform data for audio files: scanning audio into peaks, caching the result on disk, and rendering
+peaks to images. It does not import AppKit or Metal.
 
-Scanning reads a file through AVFoundation, or decoded audio from any `SequentialPCMSource` for
-containers AVFoundation cannot open, and both produce the same `WaveformData`. The cache is sharded
-on disk, keyed by file and audio track, and treats an entry as stale once the file's modification
-date or size changes. The package also caches reversed copies of audio files for reversed playback,
-under the same freshness rules.
+## Features
 
-Decoding containers belongs to spfk-audio-conversion and spfk-matroska, building reversed audio to
-spfk-audio-conversion, and drawing on screen to spfk-audio-ui.
-
-## Freshness
-
-A cached waveform is invalidated by its file's modification date. After writing metadata to a file,
-refresh the cache's freshness for it, or the app's own write discards a waveform that is still
-correct.
+- Scan a file through AVFoundation, or decoded audio from any `SequentialPCMSource`, into
+  `WaveformData`
+- A sharded disk cache keyed by file and audio track, with entries treated as stale once the file's
+  modification date or size changes (`refreshFreshness(urls:)` updates them after a metadata write)
+- A cache of reversed copies of audio files, under the same freshness rules
+- Rendering of peaks to images (`WaveformImage`)
 
 ## About
 
