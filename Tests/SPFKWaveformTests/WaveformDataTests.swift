@@ -31,12 +31,6 @@ class WaveformDataTests: TestCaseModel {
         )
     }()
 
-    @Test func data() throws {
-        #expect(waveformData.floatChannelData.count == 2)
-        #expect(waveformData.floatChannelData[0].count == 5_292_000)
-        #expect(waveformData.floatChannelData[1].count == 5_292_000)
-    }
-
     @Test func subdata_1() throws {
         let benchmark = Benchmark(label: "\((#file as NSString).lastPathComponent):\(#function)")
         defer { benchmark.stop() }

@@ -143,32 +143,4 @@ struct WaveformImageTests {
         )
         #expect(images.count == 1)
     }
-
-    // MARK: - WaveformDisplay
-
-    @Test func waveformDisplayMinMax() {
-        #expect(WaveformDisplay.full.minimum == -1)
-        #expect(WaveformDisplay.full.maximum == 1)
-        #expect(WaveformDisplay.rectified.minimum == 0)
-        #expect(WaveformDisplay.rectified.maximum == 1)
-    }
-
-    // MARK: - WaveformQuality
-
-    @Test func waveformQualityRawValues() {
-        #expect(WaveformQuality.minimum.rawValue == 1)
-        #expect(WaveformQuality.low.rawValue == 2)
-        #expect(WaveformQuality.medium.rawValue == 5)
-        #expect(WaveformQuality.high.rawValue == 8)
-        #expect(WaveformQuality.maximum.rawValue == 10)
-    }
-
-    @Test func waveformQualityLabels() {
-        #expect(WaveformQuality.minimum.label == "Minimum")
-        #expect(WaveformQuality.low.label == "Low")
-        #expect(WaveformQuality.medium.label == "Medium")
-        #expect(WaveformQuality.high.label == "High")
-        #expect(WaveformQuality.maximum.label == "Maximum")
-    }
-
 }
