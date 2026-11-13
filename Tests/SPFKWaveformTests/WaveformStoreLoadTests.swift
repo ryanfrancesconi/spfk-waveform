@@ -23,7 +23,7 @@ final class WaveformStoreLoadTests: BinTestCase {
         let pointCount = Int(duration * sampleRate) / resolution.samplesPerPoint
         let url = URL(string: "file:///fake/audio/track_\(index).wav")!
 
-        // Fill with a simple repeating pattern — fast to generate
+        // Fill with a simple repeating pattern - fast to generate
         let floatChannelData: FloatChannelData = (0 ..< channelCount).map { ch in
             (0 ..< pointCount).map { i in
                 sin(Float(i + ch * 1000) * 0.01)

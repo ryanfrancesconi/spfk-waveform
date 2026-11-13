@@ -205,7 +205,7 @@ final class WaveformCacheFileTests: BinTestCase {
 
         try WaveformCacheFile.write(item, to: tempFile)
 
-        // Truncate the file — remove some float bytes from the end
+        // Truncate the file - remove some float bytes from the end
         var data = try Data(contentsOf: tempFile)
         data.removeLast(4) // remove one Float
         try data.write(to: tempFile)

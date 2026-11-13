@@ -13,7 +13,7 @@ import Testing
 @MainActor
 @Suite(.tags(.file))
 final class WaveformPerTrackCacheTests: BinTestCase {
-    /// A real file, because freshness is measured against one — a fake URL has no modification date
+    /// A real file, because freshness is measured against one - a fake URL has no modification date
     /// and every lookup would read as stale for reasons unrelated to the track.
     private var url: URL { TestBundleResources.shared.tabla_wav }
 
@@ -124,7 +124,7 @@ final class WaveformPerTrackCacheTests: BinTestCase {
             ))
         }
 
-        // Every entry is stale against the real file, so nothing is fetchable — which is what makes
+        // Every entry is stale against the real file, so nothing is fetchable - which is what makes
         // the refresh below observable rather than vacuous.
         #expect(try await store.fetchIfFresh(key: WaveformCacheKey(url: url, audioTrackID: 2)) == nil)
 

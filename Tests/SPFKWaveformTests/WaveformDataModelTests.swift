@@ -139,7 +139,7 @@ extension WaveformDataModelTests {
             throw NSError(description: "no cowbell")
         }
 
-        // freshly inserted — should return cached data
+        // freshly inserted - should return cached data
         let fresh = try await data.fetchIfFresh(key: WaveformCacheKey(url: cowbell))
         #expect(fresh != nil)
         #expect(fresh?.fileSize != nil)
@@ -151,7 +151,7 @@ extension WaveformDataModelTests {
             return try await data.fetchIfFresh(key: WaveformCacheKey(url: cowbell))
         }
 
-        // file was modified — should return nil and delete stale record
+        // file was modified - should return nil and delete stale record
         let staleResult = try await task.value
         #expect(staleResult == nil)
 

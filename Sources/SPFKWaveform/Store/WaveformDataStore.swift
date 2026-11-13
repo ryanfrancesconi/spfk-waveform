@@ -38,7 +38,7 @@ public actor WaveformDataStore {
 
     /// Every entry belonging to one file, whichever track each names.
     ///
-    /// A file's entries all begin with its hash — see `WaveformCacheKey.storageKey` — so they share
+    /// A file's entries all begin with its hash - see `WaveformCacheKey.storageKey` - so they share
     /// one shard, and this is a prefix match rather than an equality test. Anything that compares whole keys against file
     /// hashes treats every per-track entry as belonging to no file at all.
     private func entryKeys(forFileKey fileKey: String) -> [String] {
@@ -98,7 +98,7 @@ extension WaveformDataStore {
 
     /// Removes every cached waveform for `url`, across all of its audio tracks.
     ///
-    /// Per-file rather than per-track because every caller means "this file's waveform is gone" —
+    /// Per-file rather than per-track because every caller means "this file's waveform is gone" -
     /// the file was deleted, or its contents changed under us.
     public func delete(url: URL) throws {
         let keys = entryKeys(forFileKey: url.sha256)
@@ -151,7 +151,7 @@ extension WaveformDataStore {
     /// Prefer this overload when the caller already has pre-computed SHA256 keys.
     ///
     /// **Matches the file part of each entry, not the whole key.** An entry naming a track is
-    /// `<hash>-<track>`, which is in no set of URL hashes — comparing whole keys deletes every
+    /// `<hash>-<track>`, which is in no set of URL hashes - comparing whole keys deletes every
     /// per-track waveform on the next sweep and re-scans them all on the next load.
     ///
     /// - Parameter activeKeys: SHA256 hex strings of URLs currently referenced by playlists
@@ -199,7 +199,7 @@ extension WaveformDataStore {
     ///
     /// Each entry is rewritten rather than renamed: it embeds its source URL, and its freshness
     /// fields are restamped from `newURL` so ``fetchIfFresh(key:)`` keeps it. **Only call this for a
-    /// file verified to hold the same audio** — the restamp is what asserts it. When `newURL`
+    /// file verified to hold the same audio** - the restamp is what asserts it. When `newURL`
     /// already has entries they win, and `oldURL`'s are deleted.
     public func rekey(from oldURL: URL, to newURL: URL) throws {
         let oldKeys = entryKeys(forFileKey: oldURL.sha256)
@@ -226,7 +226,7 @@ extension WaveformDataStore {
         }
     }
 
-    /// No-op for waveform store — each insert writes immediately.
+    /// No-op for waveform store - each insert writes immediately.
     /// Kept for API compatibility with callers that call save() generically.
     public func save() throws {}
 }

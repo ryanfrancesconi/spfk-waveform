@@ -10,13 +10,13 @@ import SPFKBase
 /// URL alone serves whichever was scanned first.
 ///
 /// **The track is an opaque discriminator, not a track type.** This package knows nothing about
-/// containers, and a cache does not need to — `AudioTrackDescription.ID` lives in `spfk-video`,
+/// containers, and a cache does not need to - `AudioTrackDescription.ID` lives in `spfk-video`,
 /// which `spfk-audio-base` deliberately does not depend on. A caller passes the identifier's raw
 /// value and the cache treats it as a number that makes two entries different.
 public struct WaveformCacheKey: Hashable, Sendable {
     public let url: URL
 
-    /// `nil` is the container's default audio, which is every file with a single track — and so is
+    /// `nil` is the container's default audio, which is every file with a single track - and so is
     /// every entry written before tracks were a dimension at all.
     public let audioTrackID: UInt64?
 
@@ -34,7 +34,7 @@ public struct WaveformCacheKey: Hashable, Sendable {
     ///
     /// **`nil` resolves to the file key unchanged**, so a single-track file keeps the entry it
     /// already had rather than every library re-scanning the first time this ships. That is a
-    /// consequence of the encoding rather than a migration — there is no second path to maintain.
+    /// consequence of the encoding rather than a migration - there is no second path to maintain.
     public var storageKey: String {
         guard let audioTrackID else { return fileKey }
 

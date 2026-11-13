@@ -12,7 +12,7 @@ import SPFKBase
 /// `fileSize`) sit early in the header so a partial read can reach them.
 ///
 /// **Only the current version is readable.** An entry written by an older build is a cache miss
-/// rather than a migration — this is a derived cache whose worst case is one re-scan, so carrying a
+/// rather than a migration - this is a derived cache whose worst case is one re-scan, so carrying a
 /// second parser for every past layout costs more than it saves. `WaveformDataStore` deletes what it
 /// cannot read.
 public struct WaveformCacheFile {

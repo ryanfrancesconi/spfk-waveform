@@ -16,7 +16,7 @@ public struct WaveformDataItem: Sendable, Hashable, Codable, Equatable {
 
     public let url: URL
 
-    /// Which audio track this describes, or `nil` for the container's default — see
+    /// Which audio track this describes, or `nil` for the container's default - see
     /// ``WaveformCacheKey``.
     public let audioTrackID: UInt64?
 

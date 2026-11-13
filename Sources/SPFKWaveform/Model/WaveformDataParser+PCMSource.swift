@@ -11,7 +11,7 @@ public extension WaveformDataParser {
     /// Builds waveform data from decoded PCM rather than from a file.
     ///
     /// The counterpart to ``parse(audioFile:)`` for sources AVFoundation will not open. Everything
-    /// downstream — the waveform view, its cache, markers, the editor — consumes the returned
+    /// downstream - the waveform view, its cache, markers, the editor - consumes the returned
     /// ``WaveformData`` and neither knows nor cares which entry point produced it.
     ///
     /// - Parameter duration: the source's duration in seconds. Taken as a parameter because a
@@ -105,7 +105,7 @@ public extension WaveformDataParser {
 // MARK: - Peak reduction
 
 extension WaveformDataParser {
-    /// The peak magnitude of one chunk, per channel — the only numerically meaningful step in a
+    /// The peak magnitude of one chunk, per channel - the only numerically meaningful step in a
     /// waveform scan, and shared so the file and streamed paths cannot disagree about what a
     /// waveform looks like.
     ///
