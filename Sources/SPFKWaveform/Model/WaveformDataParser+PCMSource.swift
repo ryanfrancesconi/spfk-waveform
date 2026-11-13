@@ -55,7 +55,7 @@ public extension WaveformDataParser {
         while index < chunkCount {
             try Task.checkCancellation()
 
-            let written = try pcmSource.readNextChunk(
+            let written = try await pcmSource.readNextChunk(
                 into: buffer,
                 frameCount: AVAudioFrameCount(samplesPerPoint)
             )
